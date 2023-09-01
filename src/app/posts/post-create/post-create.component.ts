@@ -1,16 +1,18 @@
-import { Component, EventEmitter, OnInit, Output } from "@angular/core";
+import { Component, EventEmitter, OnInit, Output, OnDestroy } from "@angular/core";
 import { NgForm } from "@angular/forms";
 
 import { Post } from "../post.model";
 import { PostsService } from "../posts.service";
 import { ActivatedRoute, ParamMap } from "@angular/router";
+import { AuthService } from "src/app/auth/auth.service";
+import { Subscription } from "rxjs";
 
 @Component({
     selector: 'app-post-create',
     templateUrl: './post-create.component.html',
     styleUrls: ['./post-create.component.css']
 })
-export class PostCreateComponent implements OnInit {
+export class PostCreateComponent implements OnInit, OnDestroy {
 
     enteredTitle: string = "";
     enteredContent: string = "";
@@ -27,9 +29,18 @@ export class PostCreateComponent implements OnInit {
 
     @Output() postCreated: EventEmitter<Post> = new EventEmitter<Post>();
 
-    constructor(private postsService: PostsService, public route: ActivatedRoute) {}
+    private authStatusSub: Subscription;
+
+    constructor(private postsService: PostsService, public route: ActivatedRoute, private authService: AuthService) {}
 
     ngOnInit(): void {
+
+        this.authStatusSub = this.authService.getAuthStatusListener().subscribe(
+            authStatus => {
+                this.isLoading = false;
+            }
+        )
+
         this.route.paramMap.subscribe((paramMap: ParamMap) => {
             if(paramMap.has("postId")) {
                 this.mode = "edit";
@@ -74,6 +85,10 @@ export class PostCreateComponent implements OnInit {
         form.resetForm();
         return;
         // this.postCreated.emit(post);
+    }
+
+    ngOnDestroy(): void {
+        this.authStatusSub.unsubscribe();
     }
 
 }
