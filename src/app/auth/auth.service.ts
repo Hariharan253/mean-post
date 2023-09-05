@@ -4,6 +4,8 @@ import { AuthData } from './auth-data.model';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 
+const BACKEND_URL = "http://localhost:3000/api/user";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +39,7 @@ export class AuthService {
 
   createUser(email: string, password: string) {
     const authData: AuthData = {email, password}
-    this.http.post<{message: string}>("http://localhost:3000/api/user/signup", authData).subscribe(() => {
+    this.http.post<{message: string}>(`${BACKEND_URL}/signup`, authData).subscribe(() => {
       this.router.navigate(["/"])
     }, error => {
       this.authStatusListener.next(false);
@@ -47,7 +49,7 @@ export class AuthService {
 
   login(email: string, password: string) {
     const authData: AuthData = {email, password}
-    this.http.post<{token: string, expiresIn: number, userId: string}>("http://localhost:3000/api/user/login", authData)
+    this.http.post<{token: string, expiresIn: number, userId: string}>(`${BACKEND_URL}/login`, authData)
     .subscribe((response) => {
       const expiresInDuration = response.expiresIn;
       console.log(expiresInDuration);
@@ -107,7 +109,7 @@ export class AuthService {
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
     this.clearAuthData();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
   private saveAuthData(token: string, expirationDate: Date, userId: string) {

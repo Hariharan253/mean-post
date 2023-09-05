@@ -9,7 +9,7 @@ const userRoutes = require("./routes/user");
 
 const app = express();
 
-mongoose.connect("mongodb+srv://hariharan210325:cqY2UDiIaDZ7C7oe@my-post.yt6dowc.mongodb.net/node-angular?retryWrites=true")
+mongoose.connect(`mongodb+srv://hariharan210325:${process.env.MONGO_ATLAS_PW}@my-post.yt6dowc.mongodb.net/node-angular?retryWrites=true`)
     .then(() => {
         console.log("MongoDb Connection Successfull");
     }).catch((err) => {

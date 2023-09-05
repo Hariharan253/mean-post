@@ -32,7 +32,7 @@ exports.updatePost = (req, res, next) => { //adding creator to the deleteOne que
     Post.updateOne({_id: req.params.id, creator: req.userData.userId}, post)
     .then((result) => {
         console.log("updated Result", result);
-        if(result.modifiedCount > 0) //modifiedCount will be 1 if the mongoose delete query is executed
+        if(result.matchedCount > 0 || result.modifiedCount > 0) //matchedCount will be 1 if the mongoose has found a Data
             return res.status(200).json({"message": "Update Successful"})
         else
             return res.status(401).json({"message": "User Unauthorizes"});
