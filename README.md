@@ -1,3 +1,6 @@
+URL:
+http://node-angular-mean-post-001.s3-website.ap-south-1.amazonaws.com/
+
 # MeanProfile
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.1.8.
